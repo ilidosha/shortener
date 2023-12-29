@@ -134,11 +134,8 @@ func (rest *Rest) ReturnUrl(w http.ResponseWriter, r *http.Request) {
 	short := chi.URLParam(r, "short")
 	_, ok := rest.storage.Records[short]
 	if ok {
+		w.Header().Set("Location", rest.storage.Records[short])
 		w.WriteHeader(http.StatusTemporaryRedirect)
-		_, err := w.Write([]byte("Location: " + rest.storage.Records[short]))
-		if err != nil {
-			log.Error().Err(err).Msg("Something went wrong")
-		}
 		//http.Redirect(w, r, rest.storage.Records[short], http.StatusTemporaryRedirect)
 	}
 	if !ok {
