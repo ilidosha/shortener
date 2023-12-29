@@ -121,7 +121,7 @@ func (rest *Rest) ShortenUrl(w http.ResponseWriter, r *http.Request) { //nolint:
 		return
 	}
 
-	_, errWrite := w.Write([]byte(rest.baseURL + shortened))
+	_, errWrite := w.Write([]byte(rest.baseURL + "/" + shortened))
 	if errWrite != nil {
 		log.Error().Err(errWrite).Msg("Cannot write response")
 		w.WriteHeader(http.StatusBadRequest)
