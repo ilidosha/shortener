@@ -33,7 +33,7 @@ func (rest *Rest) Run(baseAddress, baseURL string) {
 	}
 
 	rest.storage = shortener.Storage{
-		make(map[string]string),
+		Records: make(map[string]string),
 	}
 	rest.baseURL = baseURL
 
