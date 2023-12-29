@@ -8,16 +8,9 @@ import (
 	"syscall"
 )
 
-// ServerCommand опции для команды app
-type ServerCommand struct {
-	Address string `long:"address" short:"a" env:"SERVER_ADDRESS" default:"localhost:8080" description:"server address"`
-	BaseURL string `long:"url" short:"b" env:"BASE_URL" default:"localhost:8080" description:"server address"`
-}
-
 // Execute — точка входа в команду app
-func (cmd *ServerCommand) Execute(_ []string) error {
-
-	app, err := cmd.newServerApp()
+func Execute(_ []string, serverAddress string, baseURL string) error {
+	app, err := newServerApp(serverAddress, baseURL)
 	if err != nil {
 		log.Fatal().Err(err).Msg("не удалось создать сервер")
 	}
@@ -44,15 +37,23 @@ func (cmd *ServerCommand) Execute(_ []string) error {
 
 // serverApp содержит все активные объекты: http-app и фоновые сервисы
 type serverApp struct {
-	*ServerCommand
-	rest Rest
+	params params
+	rest   Rest
+}
+
+type params struct {
+	ServerAddress string
+	BaseUrl       string
 }
 
 // newServerApp собирает зависимости и формирует приложение готовое для запуска
-func (cmd *ServerCommand) newServerApp() (*serverApp, error) {
+func newServerApp(serverAddress, baseURL string) (*serverApp, error) {
 	app := &serverApp{
-		ServerCommand: cmd,
-		rest:          Rest{},
+		rest: Rest{},
+		params: params{
+			ServerAddress: serverAddress,
+			BaseUrl:       baseURL,
+		},
 	}
 
 	log.Info().Msg("зависимости построены")
@@ -69,7 +70,7 @@ func (app *serverApp) run(ctx context.Context) error { // nolint:unparam // erro
 	}()
 
 	// Запускаем http-сервер
-	app.rest.Run(app.Address, app.BaseURL)
+	app.rest.Run(app.params.ServerAddress, app.params.BaseUrl)
 
 	return nil
 }

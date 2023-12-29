@@ -11,8 +11,9 @@ import (
 
 // Options — опции приложения
 type Options struct {
-	ServerCmd server.ServerCommand `command:"server" description:"запуск сервера"`
-	Debug     bool                 `long:"dbg" env:"DEBUG" description:"debug mode" required:"false"`
+	ServerAddress string `long:"address" short:"a" env:"SERVER_ADDRESS" default:"localhost:8080" description:"server address"`
+	BaseURL       string `long:"url" short:"b" env:"BASE_URL" default:"localhost:8080" description:"server address"`
+	Debug         bool   `long:"dbg" env:"DEBUG" description:"debug mode" required:"false"`
 }
 
 var revision = "unknown"
@@ -25,7 +26,7 @@ func main() {
 
 		log.Info().Str("revision", revision).Send()
 
-		err := command.Execute(args)
+		err := server.Execute(args, opts.ServerAddress, opts.BaseURL)
 		if err != nil {
 			log.Info().Err(err).Msg("ошибка выполнения команды")
 		}

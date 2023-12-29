@@ -22,9 +22,9 @@ type Rest struct {
 }
 
 // Run запускает REST-сервис
-func (rest *Rest) Run(baseAddress, baseURL string) {
+func (rest *Rest) Run(serverAddress, baseURL string) {
 	rest.httpServer = &http.Server{
-		Addr:              fmt.Sprintf("%s", baseAddress),
+		Addr:              fmt.Sprintf("%s", serverAddress),
 		Handler:           rest.routes(),
 		ReadTimeout:       5 * time.Second,
 		ReadHeaderTimeout: 3 * time.Second,
