@@ -121,20 +121,25 @@ func (rest *Rest) ShortenUrl(w http.ResponseWriter, r *http.Request) { //nolint:
 		return
 	}
 
+	w.WriteHeader(http.StatusCreated)
 	_, errWrite := w.Write([]byte(rest.baseURL + "/" + shortened))
 	if errWrite != nil {
 		log.Error().Err(errWrite).Msg("Cannot write response")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	w.WriteHeader(http.StatusCreated)
 }
 
 func (rest *Rest) ReturnUrl(w http.ResponseWriter, r *http.Request) {
 	short := chi.URLParam(r, "short")
 	_, ok := rest.storage.Records[short]
 	if ok {
-		http.Redirect(w, r, rest.storage.Records[short], http.StatusSeeOther)
+		w.WriteHeader(http.StatusTemporaryRedirect)
+		_, err := w.Write([]byte("Location: " + rest.storage.Records[short]))
+		if err != nil {
+			log.Error().Err(err).Msg("Something went wrong")
+		}
+		//http.Redirect(w, r, rest.storage.Records[short], http.StatusTemporaryRedirect)
 	}
 	if !ok {
 		w.WriteHeader(http.StatusBadRequest)
