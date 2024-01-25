@@ -136,9 +136,10 @@ func (rest *Rest) ReturnUrl(w http.ResponseWriter, r *http.Request) {
 	_, ok := rest.storage.Records[short]
 	if ok {
 		log.Info().Msgf("Получен запрос на возврат урла короткий урл: %v, длинный: %v", short, rest.storage.Records[short])
-		w.Header().Set("Location", rest.storage.Records[short])
+		//w.Header().Set("Location", rest.storage.Records[short])
 		w.WriteHeader(http.StatusTemporaryRedirect)
 		//http.Redirect(w, r, rest.storage.Records[short], http.StatusTemporaryRedirect)
+		w.Write([]byte("Location: " + rest.storage.Records[short]))
 	}
 	if !ok {
 		w.WriteHeader(http.StatusBadRequest)
