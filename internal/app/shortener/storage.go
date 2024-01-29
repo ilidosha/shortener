@@ -7,7 +7,7 @@ import (
 	"net/url"
 )
 
-// URLShortener содержит мапу всех записаных урлов и их хешей
+// Storage содержит мапу всех записаных урлов и их хешей
 type Storage struct {
 	Records map[string]string
 }
