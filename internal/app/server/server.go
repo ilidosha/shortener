@@ -43,7 +43,7 @@ type serverApp struct {
 
 type params struct {
 	ServerAddress string
-	BaseUrl       string
+	BaseURL       string
 }
 
 // newServerApp собирает зависимости и формирует приложение готовое для запуска
@@ -52,7 +52,7 @@ func newServerApp(serverAddress, baseURL string) (*serverApp, error) {
 		rest: Rest{},
 		params: params{
 			ServerAddress: serverAddress,
-			BaseUrl:       baseURL,
+			BaseURL:       baseURL,
 		},
 	}
 
@@ -70,7 +70,7 @@ func (app *serverApp) run(ctx context.Context) error { // nolint:unparam // erro
 	//}()
 
 	// Запускаем http-сервер
-	app.rest.Run(app.params.ServerAddress, app.params.BaseUrl)
+	app.rest.Run(app.params.ServerAddress, app.params.BaseURL)
 
 	return nil
 }

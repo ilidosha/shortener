@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"fmt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/rs/zerolog"
@@ -24,7 +23,7 @@ type Rest struct {
 // Run запускает REST-сервис
 func (rest *Rest) Run(serverAddress, baseURL string) {
 	rest.httpServer = &http.Server{
-		Addr:              fmt.Sprintf("%s", serverAddress),
+		Addr:              serverAddress,
 		Handler:           rest.routes(),
 		ReadTimeout:       5 * time.Second,
 		ReadHeaderTimeout: 3 * time.Second,
@@ -85,19 +84,19 @@ func (rest *Rest) routes() chi.Router {
 	// Публичный API
 	router.Route("/", func(r chi.Router) {
 		r.Group(func(r chi.Router) {
-			r.Post("/", rest.ShortenUrl)
+			r.Post("/", rest.ShortenURL)
 		})
 		r.Group(func(r chi.Router) {
-			r.Get("/{short}", rest.ReturnUrl)
+			r.Get("/{short}", rest.ReturnURL)
 		})
 	})
 
 	return router
 }
 
-func (rest *Rest) ShortenUrl(w http.ResponseWriter, r *http.Request) { //nolint:bodyClose // cause body is closed in func
+func (rest *Rest) ShortenURL(w http.ResponseWriter, r *http.Request) { //nolint:bodyClose // cause body is closed in func
 	responseData, err := io.ReadAll(r.Body)
-	longUrl := string(responseData)
+	longURL := string(responseData)
 
 	defer func(Body io.ReadCloser) {
 		errBodyClose := Body.Close()
@@ -114,13 +113,13 @@ func (rest *Rest) ShortenUrl(w http.ResponseWriter, r *http.Request) { //nolint:
 		return
 	}
 
-	shortened, errAppend := rest.storage.Append(longUrl)
+	shortened, errAppend := rest.storage.Append(longURL)
 	if errAppend != nil {
 		log.Error().Err(errAppend).Msg("Cannot append to map")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	log.Info().Msgf("Получен запрос на запись, коротки урл: %v, длинный: %v", shortened, longUrl)
+	log.Info().Msgf("Получен запрос на запись, коротки урл: %v, длинный: %v", shortened, longURL)
 
 	w.WriteHeader(http.StatusCreated)
 	_, errWrite := w.Write([]byte(rest.baseURL + "/" + shortened))
@@ -131,7 +130,7 @@ func (rest *Rest) ShortenUrl(w http.ResponseWriter, r *http.Request) { //nolint:
 	}
 }
 
-func (rest *Rest) ReturnUrl(w http.ResponseWriter, r *http.Request) {
+func (rest *Rest) ReturnURL(w http.ResponseWriter, r *http.Request) {
 	short := chi.URLParam(r, "short")
 	_, ok := rest.storage.Records[short]
 	if ok {
