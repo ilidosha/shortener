@@ -13,23 +13,23 @@ type Storage struct {
 }
 
 // Append добавляет новую ссылку в мапу
-func (s *Storage) Append(LongUrl string) (string, error) {
-	_, errIsNotURL := url.ParseRequestURI(LongUrl)
+func (s *Storage) Append(LongURL string) (string, error) {
+	_, errIsNotURL := url.ParseRequestURI(LongURL)
 	if errIsNotURL != nil {
 		log.Error().Err(errIsNotURL).Msg("Provided string is not an url")
 		return "", errIsNotURL
 	}
 	shortKey := generateShortKey()
 	// check if key exists
-	_, ok := s.Records[LongUrl]
+	_, ok := s.Records[LongURL]
 	// If the key NOT exists
 	if !ok {
-		s.Records[shortKey] = LongUrl
+		s.Records[shortKey] = LongURL
 		return shortKey, nil
 	}
 	if ok {
 		// regenerate key if got a collision, yes i know this is recursion and may end poorly
-		return s.Append(LongUrl)
+		return s.Append(LongURL)
 	}
 	return "", errors.New("something went wrong")
 }
