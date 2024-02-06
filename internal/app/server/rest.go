@@ -23,12 +23,12 @@ type Rest struct {
 // Run запускает REST-сервис
 func (rest *Rest) Run(serverAddress, baseURL string) {
 	rest.httpServer = &http.Server{
-		Addr:              serverAddress,
-		Handler:           rest.routes(),
-		ReadTimeout:       5 * time.Second,
-		ReadHeaderTimeout: 3 * time.Second,
-		WriteTimeout:      60 * time.Second,
-		IdleTimeout:       30 * time.Second,
+		Addr:    serverAddress,
+		Handler: rest.routes(),
+		//ReadTimeout:       5 * time.Second,
+		//ReadHeaderTimeout: 3 * time.Second,
+		//WriteTimeout:      60 * time.Second,
+		//IdleTimeout:       30 * time.Second,
 	}
 
 	rest.storage = shortener.Storage{
