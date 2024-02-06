@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"github.com/jessevdk/go-flags"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -35,12 +34,12 @@ func main() {
 	}
 
 	if _, err := p.Parse(); err != nil {
-		var flagsErr *flags.Error
-		if errors.Is(err, flagsErr) && flagsErr.Type == flags.ErrHelp {
-			os.Exit(0)
-		} else {
-			os.Exit(1)
-		}
+		//var flagsErr *flags.Error
+		//if errors.Is(err, flagsErr) && flagsErr.Type == flags.ErrHelp {
+		//	os.Exit(0)
+		//} else {
+		os.Exit(1)
+		//}
 	}
 }
 
