@@ -63,11 +63,11 @@ func newServerApp(serverAddress, baseURL string) (*serverApp, error) {
 // Запускает приложение
 func (app *serverApp) run(ctx context.Context) error { // nolint:unparam // error понадобится позже
 	// При отмене контекста останавливаем http-сервер
-	//go func() {
-	//	<-ctx.Done()
-	//	log.Info().Msg("получен сигнал остановки сервиса")
-	//	app.rest.Shutdown()
-	//}()
+	go func() {
+		<-ctx.Done()
+		log.Info().Msg("получен сигнал остановки сервиса")
+		app.rest.Shutdown()
+	}()
 
 	// Запускаем http-сервер
 	app.rest.Run(app.params.ServerAddress, app.params.BaseURL)
