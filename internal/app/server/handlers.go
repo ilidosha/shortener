@@ -43,11 +43,12 @@ func (rest *Rest) ShortenURL(w http.ResponseWriter, r *http.Request) { //nolint:
 }
 
 func (rest *Rest) ReturnURL(w http.ResponseWriter, r *http.Request) {
-	//short := chi.URLParam(r, "short")
+	//short := chi.URLParam(r, "short")э
+
 	s := r.URL.Path[1:]
+	log.Info().Msgf("Получен запрос на возврат урла короткий урл: %v", s)
 	_, ok := rest.storage.Records[s]
 	if ok {
-		log.Info().Msgf("Получен запрос на возврат урла короткий урл: %v, длинный: %v", s, rest.storage.Records[s])
 
 		w.Header().Set("Location", rest.storage.Records[s])
 		w.WriteHeader(http.StatusTemporaryRedirect)
