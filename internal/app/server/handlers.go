@@ -1,7 +1,6 @@
 package server
 
 import (
-	"github.com/go-chi/chi/v5"
 	"github.com/rs/zerolog/log"
 	"io"
 	"net/http"
@@ -44,12 +43,13 @@ func (rest *Rest) ShortenURL(w http.ResponseWriter, r *http.Request) { //nolint:
 }
 
 func (rest *Rest) ReturnURL(w http.ResponseWriter, r *http.Request) {
-	short := chi.URLParam(r, "short")
-	_, ok := rest.storage.Records[short]
+	//short := chi.URLParam(r, "short")
+	s := r.URL.Path[1:]
+	_, ok := rest.storage.Records[s]
 	if ok {
-		log.Info().Msgf("Получен запрос на возврат урла короткий урл: %v, длинный: %v", short, rest.storage.Records[short])
+		log.Info().Msgf("Получен запрос на возврат урла короткий урл: %v, длинный: %v", s, rest.storage.Records[s])
 
-		w.Header().Set("Location", rest.storage.Records[short])
+		w.Header().Set("Location", rest.storage.Records[s])
 		w.WriteHeader(http.StatusTemporaryRedirect)
 
 		//http.Redirect(w, r, rest.storage.Records[short], http.StatusTemporaryRedirect)
